@@ -8,3 +8,5 @@ edition = "2021"
 [dependencies]
 dotenv = "0.15.0"
 ethers = "2.0.14"
+tokio = { version = "1.37.0", features = ["full"] }
+url = "2.5.0"
