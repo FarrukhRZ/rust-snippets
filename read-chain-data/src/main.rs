@@ -3,16 +3,28 @@ use ethers::providers::{Http, Middleware, Provider, ProviderError};
 use ethers::types::{U64, U256};
 use dotenv::dotenv;
 use url::{ParseError};
+use thiserror::Error;
 
+#[derive(Error, Debug)]
+enum Error {
+    #[error("provider error: {0}")]
+    ProviderError(#[from] ProviderError),
+
+    #[error("parse error: {0}")]
+    ParseError(#[from] ParseError),
+
+    #[error("environment variable error: {0}")]
+    VarError(#[from] std::env::VarError),
+}
 #[tokio::main]
-async fn main() -> Result<(),ParseError>{
+async fn main() -> Result<(),Error>{
     dotenv().ok();
-    let mainnet_rpc = std::env::var("MAINNET_RPC_URL").expect("MAINNET_RPC_URL is not set in .env");
+    let mainnet_rpc = std::env::var("MAINNET_RPC_URL")?;
     let provider = Provider::try_from(mainnet_rpc)?;
-    let block_number = read_block_number(&provider).await;
-    println!("Block number: {:?}", block_number.unwrap());
-    let chain_id = read_chain_id(&provider).await;
-    println!("Chain id: {:?}", chain_id.unwrap());
+    let block_number = read_block_number(&provider).await?;
+    println!("Block number: {:?}", block_number);
+    let chain_id = read_chain_id(&provider).await?;
+    println!("Chain id: {:?}", chain_id);
     Ok(())
 }
 
