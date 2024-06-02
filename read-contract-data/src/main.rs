@@ -6,13 +6,13 @@ use ethers::providers::Provider;
 use ethers::types::Address;
 use std::sync::Arc;
 
-abigen!(IERC20, "./src/constants/IERC20.json");
+abigen!(IERC20, "./src/abi/IERC20.json");
 
 #[tokio::main]
 async fn main() -> Result<()> {
     dotenv().ok();
 
-    let mainnet_rpc = std::env::var("MAINNET_RPC_URL")?;
+    let mainnet_rpc = std::env::var("RPC_URL_MAINNET")?;
     let provider = Arc::new(Provider::try_from(mainnet_rpc)?);
 
     let usdt_address: Address = "0xdAC17F958D2ee523a2206206994597C13D831ec7".parse()?;
